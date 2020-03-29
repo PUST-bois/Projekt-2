@@ -80,3 +80,41 @@ hold on
 for track = 1:z_track_num
     stairs(y_z_all(track,:))
 end
+
+%%
+%charakterystyka statyczna
+
+t_sim = 400;
+y_wyj1 = [];
+y_wyj2 = [];
+range = -2:0.01:2;
+
+for u = range
+    y = [0;0];
+    for k=2:t_sim
+        y_temp = symulacja_obiektu6y(u, u, z_pp, z_pp,y(k),y(k-1));
+        y = [y;y_temp];
+    end
+    y_wyj1 = [y_wyj1; y(end)];
+end
+
+for z = range
+    y = [0;0];
+    for k=2:t_sim
+        y_temp = symulacja_obiektu6y(u_pp,u_pp,z,z,y(k),y(k-1));
+        y = [y;y_temp];
+    end
+    y_wyj2 = [y_wyj2; y(end)];
+end
+
+figure(4)
+scatter(range, y_wyj1)
+title('Charakterystyka statyczna obiektu')
+xlabel('u')
+ylabel('y')
+
+figure(5)
+scatter(range, y_wyj2)
+title('Charakterystyka statyczna obiektu')
+xlabel('u')
+ylabel('y')
