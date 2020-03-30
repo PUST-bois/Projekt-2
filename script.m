@@ -59,7 +59,7 @@ for track = 1:z_track_num
     
     y = ones(1,t_sim2)*y_pp;
     for k = 3:t_sim2
-        if k-7 <= 0
+        if k-4 <= 0
             y(k) = symulacja_obiektu6y(u_pp,u_pp,z_pp,z_pp, y(k-1),y(k-2));
         else
             y(k) = symulacja_obiektu6y(u_pp,u_pp,z(k-3),z(k-4), y(k-1),y(k-2));      
@@ -117,4 +117,43 @@ figure(5)
 scatter(range, y_wyj2)
 title('Charakterystyka statyczna obiektu')
 xlabel('u')
+ylabel('y')
+
+%% ZAD3
+
+u_pp = 0.0;
+z_pp = 0.0;
+
+u_step = 1;
+z_step = 1;
+
+t_sim = 150;
+y_u = zeros(1,t_sim);
+y_z = zeros(1,t_sim);
+
+for k=3:t_sim
+    
+    if k-7 <= 0
+        y_u(k) = symulacja_obiektu6y(u_pp,u_pp,z_pp,z_pp, y_u(k-1),y_u(k-2));
+    else
+        y_u(k) = symulacja_obiektu6y(u_step,u_step,z_pp, z_pp, y_u(k-1),y_u(k-2));     
+    end
+    
+    if k-4 <= 0
+        y_z(k) = symulacja_obiektu6y(u_pp,u_pp,z_pp,z_pp, y_z(k-1),y_z(k-2));
+    else
+        y_z(k) = symulacja_obiektu6y(u_pp,u_pp,z_step,z_step,y_z(k-1),y_z(k-2));      
+    end
+end
+
+figure(6)
+stairs(0:t_sim-1,y_u)
+title('Odpowiedz skokowa U')
+xlabel('k')
+ylabel('y')
+
+figure(7)
+stairs(0:t_sim-1,y_z)
+title('Odpowiedz skokowa Z')
+xlabel('k')
 ylabel('y')
