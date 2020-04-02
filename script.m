@@ -26,7 +26,7 @@ t_sim2 = 300;
 %-----------U part-------------
 u_step_tim = 0;
 u_step_val = [1,1.5,2,-1,-1.5, -2];
-u_track_num = length(z_step_val);
+u_track_num = length(u_step_val);
 
 u_base = ones(1,u_step_tim)*u_pp;
 y_u_all = [];
@@ -146,14 +146,18 @@ for k=3:t_sim
     end
 end
 
+% Odpowiedüi skokowe dla DMC
+s_z = y_z(4:end);
+s_u = y_u(4:end);
+
 figure(6)
-stairs(0:t_sim-1,y_u)
+stairs(0:length(s_u)-1,s_u)
 title('Odpowiedz skokowa U')
 xlabel('k')
 ylabel('y')
 
 figure(7)
-stairs(0:t_sim-1,y_z)
+stairs(0:length(s_z)-1,s_z)
 title('Odpowiedz skokowa Z')
 xlabel('k')
 ylabel('y')
