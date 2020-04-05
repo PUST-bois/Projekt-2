@@ -1,4 +1,4 @@
-function dmc_error = dmc_eval(N, Nu, D, Dz, lambda)
+function dmc_error = dmc_eval(params)
 %% Obliczanie parametrow off-line
 load s.mat
 
@@ -6,7 +6,29 @@ u_pp = 0;
 y_pp = 0;
 z_pp = 0;
 
-
+D = 147;
+    if params(1) <=0
+        params(1) = 1;
+    end
+    if params(2) <=0
+        params(2) = 1;
+    end
+    if params(4) <=0
+        params(4) = 1;
+    end
+    if params(1) >147
+        params(1) = 147;
+    end
+    if params(2) >147
+        params(2) = 147;
+    end
+    if params(4) >147
+        params(4) = 147;
+    end
+N = params(1);
+Nu = params(2);
+lambda = params(3);
+Dz = params(4);
 
 if N > size(s_z)
     s_z(length(s_z):N) = s_z(length(s_z)-1);
@@ -72,17 +94,26 @@ y_zad(200:end) = 1;
 e = zeros(t_sim, 1);
 du = zeros(t_sim, 1);
 dz = zeros(t_sim, 1);
+tol = 0.001;
+count = 0;
 
 for k=3:t_sim
    
     if k-7 <= 0
         y(k) = symulacja_obiektu6y(u_pp,u_pp,z_pp,z_pp, y(k-1),y(k-2));
     else
-        y(k) = symulacja_obiektu6y(u(k-6),u(k-7),z_pp, z_pp, y(k-1),y(k-2));     
+        y(k) = symulacja_obiektu6y(u(k-6),u(k-7),z(k), z(k), y(k-1),y(k-2));     
     end
     % Uchyb
     e(k) = y_zad(k)-y(k);
-    
+    if abs(e(k)) <= tol && y_zad(k) == 1
+        count = count + 1;
+        if count >= 20
+            z(k:t_sim) = 1;
+        end
+    else
+        count = 0;
+    end
     % Obliczanie sum
     sum_ku = 0;
     for i = 1:D-1
@@ -109,13 +140,4 @@ end
 
 % Wskaznik jakosci E
 dmc_error = sum((y_zad-y).^2);
-figure;
-subplot(2, 1, 1);
-yticks([0, 0.5, 1, 1.5])
-plot(0:t_sim-1, y, 'r')
-hold on
-plot(0:t_sim-1, y_zad, '--b')
-hold off
-subplot(2, 1, 2);
-plot(0:t_sim-1, u, 'g')
 
